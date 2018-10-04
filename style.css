@@ -1,0 +1,16 @@
+.container {
+  border: 1px solid black;
+  height: 600px;
+  margin: 0 auto;
+  width: 600px;
+}
+
+.col {
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+  align-items: row;
+}
