@@ -12,5 +12,5 @@
 
 .row {
   display: flex;
-  align-items: row;
+  flex-direction: row;
 }
