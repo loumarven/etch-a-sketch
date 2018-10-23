@@ -1,5 +1,12 @@
+/* CONSTANTS */
 const WHITE_BG = "rgb(255, 255, 255)";
 const BLACK_BG = "rgb(0, 0, 0)";
+
+/* GLOBALS */
+let container = document.querySelector(".grid-container");
+let containerStyles = window.getComputedStyle(container);
+let containerHeight = parseInt(containerStyles.getPropertyValue("height"));
+let containerWidth = parseInt(containerStyles.getPropertyValue("width"));
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -9,7 +16,7 @@ function setBackgroundOnHover(e) {
   let r, g, b, rgbArr, currColor, rgbColor;
 
   currColor = e.target.style.backgroundColor;
-  console.log("===currColor:",currColor);
+
   if (currColor === WHITE_BG) {
     r = getRandomInt(0, 255);
     g = getRandomInt(0, 255);
@@ -23,14 +30,16 @@ function setBackgroundOnHover(e) {
       return;
     }
 
-    console.log("old:", currColor);
     rgbArr = currColor.split(",");
-    r = ((parseInt(rgbArr[0].slice(4)) - this.rsubt) < 0) ? 0 :
-          parseInt(rgbArr[0].slice(4)) - this.rsubt;
-    g = ((parseInt(rgbArr[1].slice(1)) - this.gsubt) < 0) ? 0 :
-          parseInt(rgbArr[1].slice(1)) - this.gsubt;
-    b = ((parseInt(rgbArr[2].slice(1, -1)) - this.bsubt) < 0) ? 0 :
-          parseInt(rgbArr[2].slice(1, -1)) - this.bsubt;
+
+    r = parseInt(rgbArr[0].slice(4));
+    r = (r - this.rsubt) < 0 ? 0 : r - this.rsubt;
+
+    g = parseInt(rgbArr[1].slice(1));
+    g = (g - this.gsubt) < 0 ? 0 : g - this.gsubt;
+
+    b = parseInt(rgbArr[2].slice(1, -1));
+    b = (b - this.bsubt) < 0 ? 0 : b - this.bsubt;
   }
 
   rgbColor = "rgb(" +
@@ -38,16 +47,10 @@ function setBackgroundOnHover(e) {
                     g.toString() + "," +
                     b.toString() +
                   ")";
-  console.log("new:", rgbColor);
   e.target.style.backgroundColor = rgbColor;
 }
 
 function createGrids(gridCount) {
-  let container = document.querySelector(".container");
-  let containerStyles = window.getComputedStyle(container);
-  let containerHeight = parseInt(containerStyles.getPropertyValue("height"));
-  let containerWidth = parseInt(containerStyles.getPropertyValue("width"));
-
   /* remove previously created grids */
   container.innerHTML = "";
 
@@ -71,13 +74,17 @@ function createGrids(gridCount) {
 }
 
 /* create a 16 x 16 grid on page load */
-window.addEventListener("load", createGrids(16));
+window.addEventListener("load", (e) => {
+  createGrids(16);
+});
 
 let setGridBtn = document.querySelector("#set-grid");
 setGridBtn.addEventListener("click", (e) => {
-  let gridCount = prompt("Enter grid count:");
+  let gridCount = 0;
+  do {
+    gridCount = prompt("Enter grid count with min val of 1, max of 100 (eg. 20 for 20x20 grid):");
+  } while (isNaN(gridCount) || gridCount < 1 || gridCount > 100);
   createGrids(gridCount);
-  return;
 });
 
 let clearBtn = document.querySelector("#clear-colors");
@@ -87,4 +94,9 @@ clearBtn.addEventListener("click", (e) => {
   colDiv.forEach(col => {
     col.style.backgroundColor = WHITE_BG;
   });
+});
+
+let defaultBtn = document.querySelector("#set-default");
+defaultBtn.addEventListener("click", (e) => {
+  createGrids(16);
 });
